@@ -1,41 +1,51 @@
 <template>
   <div class="weather-widget">
-    <!-- Header -->
-    <div class="weather-widget__header">
-      <div class="weather-widget__title">{{ weatherData.title }}</div>
-      <div>Edit</div>
-    </div>
-
-    <!-- Temperature -->
-    <div class="weather-widget__temp">
-      <img class="weather-widget__temp-img" :src="weatherData.imageUrl" />
-      <div class="weather-widget__temp-value"> {{ weatherData.temperature }} </div>
-    </div>
-
+    <WeatherWidgetData
+      v-if="mode === 'weather'"
+      :weatherData="weatherData"
+      @openSettings="openSettings"
+    />
+    <WeatherWidgetSettings v-if="mode === 'settings'" />
   </div>
 </template>
 
 <script>
 import { WeatherByCityModel } from '@/Models'
+import WeatherWidgetData from './WeatherWidgetData'
+import WeatherWidgetSettings from './WeatherWidgetSettings'
 
 export default {
   name: "WeatherWidget",
+  components: {
+    WeatherWidgetData,
+    WeatherWidgetSettings,
+  },
   props: {
     weatherData: {
       type: WeatherByCityModel,
       required: true
     }
   },
+  data () {
+    return {
+      mode: 'weather'
+    }
+  },
+  methods: {
+    openSettings () {
+      this.mode = 'settings'
+    }
+  }
 }
 </script>
 
 <style lang="scss">
   .weather-widget {
     width: 250px;
-    height: 400px;
+    height: 340px;
     border-radius: 10px;
     background-color: #00e1ff;
-    padding: 10px;
+    padding: 20px;
 
     &__header {
       display: flex;

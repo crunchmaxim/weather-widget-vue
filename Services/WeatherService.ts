@@ -1,4 +1,4 @@
-import { WeatherApiGateWay } from '@/ApiGateWays'
+import { WeatherApiGateWay } from '@/API'
 import { WeatherByCityModel } from '@/Models'
 
 export default class WeatherService {

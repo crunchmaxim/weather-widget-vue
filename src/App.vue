@@ -28,7 +28,6 @@ export default Vue.extend({
     } catch (e) {
       console.log(e)
       this.errorMessage = e.message
-      this.weatherData = null
     }
   },
 });
