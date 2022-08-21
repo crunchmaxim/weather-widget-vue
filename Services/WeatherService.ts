@@ -1,18 +1,25 @@
 import { WeatherApiGateWay } from '@/API'
 import { WeatherByCityModel } from '@/Models'
 
+
 export default class WeatherService {
-  static async getWeatherByCity (cityName: string) {
-    const data = await WeatherApiGateWay.getWeatherByCity(cityName)
+  api: WeatherApiGateWay
+
+  constructor () {
+    this.api = new WeatherApiGateWay()
+  }
+
+  async getWeatherByCity (cityName: string) {
+    const data = await this.api.getWeatherByCity(cityName)
     return new WeatherByCityModel(data)
   }
 
-  static async getWeatherByCoords(lat: number, lon: number) {
-    const data = await WeatherApiGateWay.getWeatherByCoords(lat, lon)
+  async getWeatherByCoords(lat: number, lon: number) {
+    const data = await this.api.getWeatherByCoords(lat, lon)
     return new WeatherByCityModel(data)
   }
 
-  static async getWeatherByCurrentUserLocation () {
+  async getWeatherByCurrentUserLocation () {
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         (geoData) => {
@@ -22,5 +29,23 @@ export default class WeatherService {
         (error) => reject(error)
       )
     })
+  }
+
+  getLocationsFromStorage () {
+    if (!localStorage.getItem('locationsArr')) {
+      localStorage.setItem('locationsArr', JSON.stringify([]))
+    }
+
+    return JSON.parse(localStorage.getItem('locationsArr')!)
+  }
+
+  addLocationToLocalStorage (locationName: string) {
+    const locationsArr: string[] = this.getLocationsFromStorage()
+
+    // Use Set to avoid duplicates
+    const locations: Set<string> = new Set(locationsArr)
+    locations.add(locationName)
+
+    localStorage.setItem('locationsArr', JSON.stringify(Array.from(locations)))
   }
 }

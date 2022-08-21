@@ -44,7 +44,7 @@ export default {
     width: 250px;
     height: 340px;
     border-radius: 10px;
-    background-color: #00e1ff;
+    background-color: #21E1E1;
     padding: 20px;
 
     &__header {

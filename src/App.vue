@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1>App component</h1>
     <WeatherWidget v-if="weatherData" :weatherData="weatherData"/>
     <div v-else>{{ errorMessage }}</div>
   </div>
@@ -16,20 +15,43 @@ export default Vue.extend({
   components: {
     WeatherWidget
   },
+  props: {
+    apikey: {
+      type: String,
+      default () {
+        return process.env.VUE_APP_API_KEY
+      }
+    }
+  },
   data() {
+    this.service = null
     return {
       weatherData: null,
       errorMessage: null,
     }
   },
   async created () {
-    try {
-    this.weatherData = await WeatherService.getWeatherByCurrentUserLocation()
-    } catch (e) {
-      console.log(e)
-      this.errorMessage = e.message
-    }
+    await this.setApiKeyToStore()
+
+    this.service = new WeatherService() // Init service when api key setted to store
+
+    this.getCurrentWeather()
+      .then(() => this.setCurrentWeatherToLocalStorage())
+      .catch(e => {
+        this.errorMessage = e.message
+      })
   },
+  methods: {
+    async setApiKeyToStore () {
+      await this.$store.dispatch('setApiKey', this.apikey)
+    },
+    async getCurrentWeather () {
+      this.weatherData = await this.service.getWeatherByCurrentUserLocation()
+    },
+    setCurrentWeatherToLocalStorage () {
+      this.service.addLocationToLocalStorage(this.weatherData.name)
+    }
+  }
 });
 </script>
 
