@@ -12,4 +12,9 @@ export default class WeatherApiGateWay {
     const res = await http.get(`weather?q=${cityName}&appid=${apiKey}&units=metric`)
     return res.data
   }
+
+  static async getWeatherByCoords (lat: number, lon: number) {
+    const res = await http.get(`weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+    return res.data
+  }
 }

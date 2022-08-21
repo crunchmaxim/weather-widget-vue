@@ -6,4 +6,21 @@ export default class WeatherService {
     const data = await WeatherApiGateWay.getWeatherByCity(cityName)
     return new WeatherByCityModel(data)
   }
+
+  static async getWeatherByCoords(lat: number, lon: number) {
+    const data = await WeatherApiGateWay.getWeatherByCoords(lat, lon)
+    return new WeatherByCityModel(data)
+  }
+
+  static async getWeatherByCurrentUserLocation () {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (geoData) => {
+          this.getWeatherByCoords(geoData.coords.latitude, geoData.coords.longitude)
+            .then((weatherData) => resolve(weatherData))
+        },
+        (error) => reject(error)
+      )
+    })
+  }
 }
