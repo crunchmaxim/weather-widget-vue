@@ -1,5 +1,7 @@
 Vue JS weather widget.
 
+Example of usage: https://crunchmaxim.github.io/weather-widget-vue-example/
+
 How to use:
 
 1. Build project via "npm run build"
