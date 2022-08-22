@@ -23,11 +23,13 @@
 </template>
 
 <script>
+import store from './../store'
 import WeatherWidgetData from './WeatherWidgetData'
 import WeatherWidgetSettings from './WeatherWidgetSettings'
 import { WeatherService } from '@/Services'
 
 export default {
+  store,
   name: "WeatherWidget",
   components: {
     WeatherWidgetData,

@@ -135,13 +135,13 @@ export default {
       }
 
       & .active {
-        border: 2px solid #fff;
-        background-color: #3120E0;
-        font-weight: 600;
+        background-color: #F0EABE;
         box-sizing: border-box;
+        color: #2c3e50;
       }
 
       &-item {
+        font-weight: 600;
         background-color: #3B9AE1;
         padding: 10px;
         border-radius: 10px;
@@ -152,7 +152,8 @@ export default {
         justify-content: space-between;
 
         &:hover {
-          background-color: #3120E0;
+          color: #2c3e50;
+          background-color: #F0EABE;
         }
 
         &:not(:last-of-type) {

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="weather-widget-data__header">
       <div class="weather-widget-data__header-title">{{ weatherData.title }}</div>
-      <img class="weather-widget-data__header-settings" src="@/src/assets/gear-svgrepo-com.svg" @click="openSettings">
+      <GearIcon class="weather-widget-data__header-settings" @click="openSettings"/>
     </div>
 
     <!-- Temperature -->
@@ -17,25 +17,25 @@
     <div class="weather-widget-data__additional">
       <!-- Wind speed -->
       <div class="weather-widget-data__additional-item">
-        <img class="weather-widget-data__additional-item-icon" src="@/src/assets/wind-svgrepo-com.svg" />
+        <WindIcon class="weather-widget-data__additional-item-icon"/>
         <div class="weather-widget-data__additional-item-value">{{ weatherData.windSpeed }}</div>
       </div>
 
       <!-- Pressure -->
       <div class="weather-widget-data__additional-item">
-        <img class="weather-widget-data__additional-item-icon" src="@/src/assets/gauge-indicator-svgrepo-com.svg" />
+        <PressureIcon class="weather-widget-data__additional-item-icon"/>
         <div class="weather-widget-data__additional-item-value">{{ weatherData.pressure }}</div>
       </div>
 
       <!-- Humidity -->
       <div class="weather-widget-data__additional-item">
-        <img class="weather-widget-data__additional-item-icon" src="@/src/assets/humidity-svgrepo-com.svg" />
+        <HumidityIcon class="weather-widget-data__additional-item-icon"/>
         <div class="weather-widget-data__additional-item-value">{{ weatherData.humidity }}</div>
       </div>
 
       <!-- Visibility -->
       <div class="weather-widget-data__additional-item">
-        <img class="weather-widget-data__additional-item-icon" src="@/src/assets/visibility-svgrepo-com.svg" />
+        <VisibilityIcon class="weather-widget-data__additional-item-icon"/>
         <div class="weather-widget-data__additional-item-value">{{ weatherData.visibility }}</div>
       </div>
     </div>
@@ -44,9 +44,21 @@
 
 <script>
 import { WeatherByCityModel } from '@/Models'
+import GearIcon from '@/src/assets/gear-svgrepo-com.svg';
+import PressureIcon from '@/src/assets/gauge-indicator-svgrepo-com.svg';
+import HumidityIcon from '@/src/assets/humidity-svgrepo-com.svg';
+import VisibilityIcon from '@/src/assets/visibility-svgrepo-com.svg';
+import WindIcon from '@/src/assets/wind-svgrepo-com.svg';
 
 export default {
   name: "WeatherWidget",
+  components: {
+    GearIcon,
+    PressureIcon,
+    HumidityIcon,
+    VisibilityIcon,
+    WindIcon,
+  },
   props: {
     weatherData: {
       type: WeatherByCityModel,

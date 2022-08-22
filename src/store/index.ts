@@ -10,7 +10,6 @@ const store = new Vuex.Store({
   mutations: {
     SET_API_KEY (state, apiKey) {
       state.apiKey = apiKey
-      console.log(state)
     }
   },
   actions: {
