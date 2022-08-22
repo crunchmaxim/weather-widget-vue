@@ -4,7 +4,7 @@ Example of usage: https://crunchmaxim.github.io/weather-widget-vue-example/
 
 How to use:
 
-1. Build project via "npm run build"
+1. Build project via "npm run build" or "yarn build"
 2. Add weather-widget.js or weather-widget.min.js from dist folder into any html template.
 3. Use widget as web component 
 ```
@@ -24,7 +24,7 @@ How to use:
 </html>
 ```
 
-API key from https://openweathermap.org/api is required. API key can be setted as env variable before build, or pass as html attribute to web component as
+API key from https://openweathermap.org/api is required. API key can be setted as VUE_APP_API_KEY variable in .env before build, or pass as html attribute to web component as
 ```
 <weather-widget apikey="YOUR_API_KEY"><weather-widget/>
 ```
