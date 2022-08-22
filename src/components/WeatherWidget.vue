@@ -2,7 +2,8 @@
   <div class="weather-widget">
 
     <div class="weather-widget__error" v-if="errorMessage">
-      {{ errorMessage }}
+      <div class="weather-widget__error-title">{{ errorMessage }}</div>
+      <LocationDenied class="weather-widget__error-icon" />
     </div>
 
     <div class="weather-widget__container" v-if="weatherData">
@@ -27,6 +28,7 @@ import store from './../store'
 import WeatherWidgetData from './WeatherWidgetData'
 import WeatherWidgetSettings from './WeatherWidgetSettings'
 import { WeatherService } from '@/Services'
+import LocationDenied from '@/src/assets/remove-location-svgrepo-com.svg'
 
 export default {
   store,
@@ -34,6 +36,7 @@ export default {
   components: {
     WeatherWidgetData,
     WeatherWidgetSettings,
+    LocationDenied,
   },
   props: {
     apiKey: {
@@ -53,11 +56,7 @@ export default {
     await this.setApiKeyToStore()
     this.service = new WeatherService() // Init service when api key setted to store
 
-    try {
-      this.getCurrentWeather()
-    } catch (error) {
-      this.errorMessage = error.message
-    }
+    this.getCurrentWeather()
   },
   methods: {
     async setApiKeyToStore () {
@@ -75,7 +74,11 @@ export default {
       this.weatherData = await this.service.getWeatherByCity(city)
     },
     async getWeatherByUserLocation () {
-      this.weatherData = await this.service.getWeatherByCurrentUserLocation()
+      try {
+        this.weatherData = await this.service.getWeatherByCurrentUserLocation()
+      } catch (error) {
+        this.errorMessage = error.message
+      }
       this.service.addCityToLocalStorage(this.weatherData.name)
       this.service.addCurrentCityToLocalStorage(this.weatherData.name)
     },
@@ -103,6 +106,25 @@ export default {
     &__temp {
       &-value {
         font-size: 30px;
+      }
+    }
+
+    &__error {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      &-title {
+        font-size: 30px;
+        font-weight: 600;
+      }
+
+      &-icon {
+        width: 100px;
+        height: 100px;
+        margin-top: 20px;
       }
     }
   }
