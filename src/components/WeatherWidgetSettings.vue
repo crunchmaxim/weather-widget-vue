@@ -3,59 +3,111 @@
     <!-- Header -->
     <div class="weather-widget-settings__header">
       <div class="weather-widget-settings__header-title">Settings</div>
-      <div class="weather-widget-settings__header-close">Close</div>
+      <div class="weather-widget-settings__header-close" @click="closeSettings">&#10006;</div>
     </div>
 
-    <!-- Locations -->
-    <div class="weather-widget-settings__locations">
+    <!-- Cities -->
+    <div class="weather-widget-settings__cities" ref="citiesContainer">
 
-      <div class="weather-widget-settings__locations-item" v-for="location in locationsArr" :key="location">
-        <span>drag </span>
-        <span>{{ location }}</span>
-        <span> delete</span>
-      </div>
+      <draggable
+        v-model="citiesArr"
+        group="cities"
+        @start="drag=true"
+        @end="drag=false"
+      >
+        <div
+          :class="`weather-widget-settings__cities-item ${city === currentCity ? 'active' : ''}`"
+          v-for="city in citiesArr"
+          :key="city"
+          @click="setNewSelectedCity(city)"
+        >
+          <div>{{ city }}</div>
+          <div @click="deleteCity(city)">&#10006;</div>
+        </div>
+      </draggable>
 
     </div>
 
-    <!-- Add location -->
+    <!-- Add new city -->
     <div class="weather-widget-settings__add">
-      <div class="weather-widget-settings__add-title">Add location:</div>
-      <input class="weather-widget-settings__add-input" type="text" v-model="newLocation">
-      <button @click="addNewLocation">+</button>
+      <input class="weather-widget-settings__add-input" type="text" v-model="newCity">
+      <button class="weather-widget-settings__add-btn" @click="addNewCity">Add city</button>
     </div>
   </div>
 </template>
 
 <script>
 import { WeatherService } from '@/Services'
+import draggable from 'vuedraggable'
+import { nextTick } from 'vue'
 
 export default {
   name: 'WeatherWidgetSettings',
+  components: {
+    draggable,
+  },
   data () {
     this.service = null
     return {
-      locationsArr: [],
-      newLocation: '',
+      citiesArr: [],
+      newCity: '',
+      currentCity: '',
+    }
+  },
+  watch: {
+    citiesArr (value) {
+      this.service.setCitiesToLocalStorage(value)
+      this.checkIfCitiesContainerScrollable()
+    },
+    currentCity (value) {
+      this.$emit('newCitySelected', value)
     }
   },
   created () {
     this.service = new WeatherService()
 
-    this.setLocationsArr()
+    this.getCurrentCity()
+    this.getCitiesArr()
+
   },
   methods: {
-    setLocationsArr () {
-      this.locationsArr = this.service.getLocationsFromStorage()
+    getCurrentCity () {
+      this.currentCity = localStorage.getItem('currentCity')
     },
-    addNewLocation () {
-      if (!this.newLocation) {
+    getCitiesArr () {
+      this.citiesArr = this.service.getCitiesFromStorage()
+    },
+    addNewCity () {
+      if (!this.newCity) {
         return
       }
 
-      this.service.addLocationToLocalStorage(this.newLocation)
-      this.setLocationsArr()
-      this.newLocation = ''
+      this.service.addCityToLocalStorage(this.newCity)
+      this.getCitiesArr()
+      this.newCity = ''
     },
+    async checkIfCitiesContainerScrollable () {
+      // If cities container has scroll bar, add additional styles
+      await nextTick()
+      const citiesContainer = this.$refs.citiesContainer
+      if (citiesContainer.clientHeight < citiesContainer.scrollHeight ) {
+        citiesContainer.classList.add('scrollable')
+      } else {
+        citiesContainer.classList.remove('scrollable')
+      }
+    },
+    setNewSelectedCity (city) {
+      this.service.addCurrentCityToLocalStorage(city)
+      this.currentCity = city
+    },
+    closeSettings() {
+      this.$emit('closeSettings')
+    },
+    deleteCity (city) {
+      this.service.deleteCityFromLocalStorage(city)
+      this.getCitiesArr()
+      this.getCurrentCity()
+    }
   },
 }
 </script>
@@ -66,19 +118,77 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      font-weight: 600;
+
+      &-close {
+        cursor: pointer;
+      }
     }
 
-    &__locations {
+    &__cities {
       margin-top: 20px;
+      max-height: 220px;
+      overflow: auto;
+
+      &.scrollable {
+        padding-right: 20px;
+      }
+
+      & .active {
+        border: 2px solid #fff;
+        background-color: #3120E0;
+        font-weight: 600;
+        box-sizing: border-box;
+      }
 
       &-item {
         background-color: #3B9AE1;
         padding: 10px;
         border-radius: 10px;
         color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &:hover {
+          background-color: #3120E0;
+        }
 
         &:not(:last-of-type) {
           margin-bottom: 10px;
+        }
+      }
+    }
+
+    &__add {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      &-input {
+        height: 30px;
+        border: none;
+        border-radius: 10px;
+        width: 100%;
+        outline: none;
+        padding: 0 10px;
+      }
+
+      &-btn {
+        height: 30px;
+        width: 100%;
+        margin-top: 5px;
+        background-color: #3B9AE1;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #3120E0;
         }
       }
     }

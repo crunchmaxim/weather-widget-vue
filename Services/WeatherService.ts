@@ -31,21 +31,47 @@ export default class WeatherService {
     })
   }
 
-  getLocationsFromStorage () {
-    if (!localStorage.getItem('locationsArr')) {
-      localStorage.setItem('locationsArr', JSON.stringify([]))
+  getCitiesFromStorage () {
+    if (!localStorage.getItem('citiesArr')) {
+      localStorage.setItem('citiesArr', JSON.stringify([]))
     }
 
-    return JSON.parse(localStorage.getItem('locationsArr')!)
+    return JSON.parse(localStorage.getItem('citiesArr')!)
   }
 
-  addLocationToLocalStorage (locationName: string) {
-    const locationsArr: string[] = this.getLocationsFromStorage()
+  addCityToLocalStorage (city: string) {
+    const citiesArr: string[] = this.getCitiesFromStorage()
 
     // Use Set to avoid duplicates
-    const locations: Set<string> = new Set(locationsArr)
-    locations.add(locationName)
+    const cities: Set<string> = new Set(citiesArr)
+    cities.add(city)
 
-    localStorage.setItem('locationsArr', JSON.stringify(Array.from(locations)))
+    localStorage.setItem('citiesArr', JSON.stringify(Array.from(cities)))
+  }
+
+  addCurrentCityToLocalStorage (city: string | undefined) {
+    if (!city) {
+      localStorage.removeItem('currentCity')
+      return
+    }
+
+    localStorage.setItem('currentCity', city)
+  }
+
+  setCitiesToLocalStorage (citiesArr: string[]) {
+    localStorage.setItem('citiesArr', JSON.stringify(Array.from(citiesArr)))
+  }
+
+  deleteCityFromLocalStorage (city: string) {
+    const citiesArr: string[] = this.getCitiesFromStorage()
+    const currentCity = localStorage.getItem('currentCity')
+
+    const newCitiesArr = citiesArr.filter(c => c !== city)
+
+    if (currentCity === city) {
+      this.addCurrentCityToLocalStorage(newCitiesArr[0])
+    }
+
+    localStorage.setItem('citiesArr', JSON.stringify(newCitiesArr))
   }
 }

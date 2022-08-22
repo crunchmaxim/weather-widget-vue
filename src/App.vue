@@ -1,14 +1,12 @@
 <template>
   <div id="app">
-    <WeatherWidget v-if="weatherData" :weatherData="weatherData"/>
-    <div v-else>{{ errorMessage }}</div>
+    <WeatherWidget :apiKey="apikey" />
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import WeatherWidget from './components/WeatherWidget'
-import { WeatherService } from '@/Services'
 
 export default Vue.extend({
   name: 'App',
@@ -23,39 +21,16 @@ export default Vue.extend({
       }
     }
   },
-  data() {
-    this.service = null
-    return {
-      weatherData: null,
-      errorMessage: null,
-    }
-  },
-  async created () {
-    await this.setApiKeyToStore()
-
-    this.service = new WeatherService() // Init service when api key setted to store
-
-    this.getCurrentWeather()
-      .then(() => this.setCurrentWeatherToLocalStorage())
-      .catch(e => {
-        this.errorMessage = e.message
-      })
-  },
-  methods: {
-    async setApiKeyToStore () {
-      await this.$store.dispatch('setApiKey', this.apikey)
-    },
-    async getCurrentWeather () {
-      this.weatherData = await this.service.getWeatherByCurrentUserLocation()
-    },
-    setCurrentWeatherToLocalStorage () {
-      this.service.addLocationToLocalStorage(this.weatherData.name)
-    }
-  }
-});
+})
 </script>
 
 <style>
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
